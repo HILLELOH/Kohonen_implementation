@@ -34,6 +34,7 @@ class Kohonen:
 
 def cube(distribution='uniform'):
     """{(x, y) | x, y ∈ [0, 1]})}"""
+    global input_data
     epochs = [1, 50]
     
     if distribution == 'uniform':
@@ -74,6 +75,7 @@ def cube(distribution='uniform'):
 def daunat(distribution='uniform'):
     """{(x, y) | 4<=x^2 + y^2 <= 16}"""
 
+    global r1, theta
     epochs = [1, 500]
     num_points = 3000
 
@@ -102,5 +104,6 @@ def daunat(distribution='uniform'):
         plt.legend(loc='upper left')
         plt.show()
 
-def main():
+if __name__ == '__main__':
     cube(distribution='uniform')
+
