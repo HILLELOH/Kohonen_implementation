@@ -1,0 +1,30 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class Kohonen:
+    def __init__(self, map_shape, learning_rate=0.1, sigma=1.0):
+        self.map_shape = map_shape
+        self.learning_rate = learning_rate
+        self.sigma = sigma
+        self.weights = np.random.rand(map_shape[0], map_shape[1], 2) # Initialize the weight matrix
+
+    def find_best_matching_unit(self, input_vector):
+        distances = np.linalg.norm(self.weights - input_vector, axis=2) # Euclidean distance between input_vector and each weight vector
+        bmu_index = np.unravel_index(np.argmin(distances), distances.shape) # Find the index of the best matching unit (BMU)
+        return bmu_index
+
+    def update_weights(self, input_vector, bmu_index):
+        distance_squares = np.sum((np.indices(self.map_shape) - np.array(bmu_index)[:, np.newaxis, np.newaxis]) ** 2, axis=0)
+        neighborhood = np.exp(-distance_squares / (2 * self.sigma ** 2))
+        self.weights += self.learning_rate * neighborhood[:, :, np.newaxis] * (input_vector - self.weights)
+
+    def train(self, input_data, num_epochs):
+        for epoch in range(num_epochs):
+            np.random.shuffle(input_data)
+
+            for input_vector in input_data:
+                bmu_index = self.find_best_matching_unit(input_vector)
+                self.update_weights(input_vector, bmu_index)
+
+    def get_weights(self):
+        return self.weights
